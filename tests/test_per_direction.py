@@ -68,7 +68,7 @@ async def test_direction_entities(hass):
     c = _coordinator(hass)
     c.data = c._parse_all(_feed(), b"", b"")
     md = PTVMaxDelaySensor(c, "Sunbury", "citybound")
-    assert md.unique_id == "ptv_sunbury_citybound_max_delay"
+    assert md.unique_id == f"{c.entry_id}_ptv_sunbury_citybound_max_delay"
     assert md.name == "PTV Sunbury Line Citybound Max Delay"
     assert md.native_value == 6.7
     assert md.extra_state_attributes == {"direction": "citybound", "delay_count": 1, "cancelled_count": 1}
@@ -77,7 +77,7 @@ async def test_direction_entities(hass):
     assert PTVMaxDelaySensor(c, "Sunbury").extra_state_attributes is None
 
     s = PTVStatusSensor(c, "Sunbury", "citybound")
-    assert s.unique_id == "ptv_sunbury_citybound_status"
+    assert s.unique_id == f"{c.entry_id}_ptv_sunbury_citybound_status"
     assert s.native_value.startswith("Sunbury citybound: 1 cancelled; delays up to 7 min; ")
     assert s.icon == "mdi:train-car-remove"
     so = PTVStatusSensor(c, "Sunbury", "outbound")
@@ -85,13 +85,13 @@ async def test_direction_entities(hass):
     assert so.icon == "mdi:train-alert"
 
     d = PTVDelayBinarySensor(c, "Sunbury", "outbound")
-    assert (d.unique_id, d.name, d.is_on) == ("ptv_sunbury_outbound_delays", "PTV Sunbury Line Outbound Delays", True)
+    assert (d.unique_id, d.name, d.is_on) == (f"{c.entry_id}_ptv_sunbury_outbound_delays", "PTV Sunbury Line Outbound Delays", True)
     assert d.extra_state_attributes == {"delay_count": 1, "max_delay_minutes": 10.0}
     x = PTVCancellationBinarySensor(c, "Sunbury", "outbound")
-    assert (x.unique_id, x.is_on) == ("ptv_sunbury_outbound_cancellations", False)
+    assert (x.unique_id, x.is_on) == (f"{c.entry_id}_ptv_sunbury_outbound_cancellations", False)
     assert PTVCancellationBinarySensor(c, "Sunbury", "citybound").is_on
     # Existing line entities keep their IDs and names
-    assert PTVDelayBinarySensor(c, "Sunbury").unique_id == "ptv_sunbury_delays"
+    assert PTVDelayBinarySensor(c, "Sunbury").unique_id == f"{c.entry_id}_ptv_sunbury_delays"
     assert PTVStatusSensor(c, "Sunbury").name == "PTV Sunbury Line Status"
 
 
